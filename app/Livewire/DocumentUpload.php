@@ -14,6 +14,12 @@ class DocumentUpload extends Component
 {
     use WithFileUploads;
 
+    #[Livewire\Attributes\Url]
+    public $search = '';
+
+    #[Livewire\Attributes\Url]
+    public $statusFilter = '';
+
     public $file;
     public $isAuditing = false;
 
@@ -86,8 +92,18 @@ class DocumentUpload extends Component
 
     public function render()
     {
+        $query = Document::where('user_id', Auth::id());
+
+        if ($this->search) {
+            $query->where('original_name', 'like', '%' . $this->search . '%');
+        }
+
+        if ($this->statusFilter) {
+            $query->where('status', $this->statusFilter);
+        }
+
         return view('livewire.document-upload', [
-            'recentDocuments' => Document::where('user_id', Auth::id())->latest()->take(5)->get()
+            'recentDocuments' => $query->latest()->paginate(10)
         ]);
     }
 }
