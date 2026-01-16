@@ -135,7 +135,8 @@
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $doc->created_at->diffForHumans() }}</td>
                         <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                             <button
-                                @click="selectedDoc = {{ e($doc->toJson()) }}; showModal = true; iframeLoading = true"
+                                data-doc="{{ $doc->toJson() }}"
+                                @click="selectedDoc = JSON.parse($el.dataset.doc); showModal = true; iframeLoading = true"
                                 class="text-indigo-600 hover:text-indigo-900">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
