@@ -105,7 +105,7 @@
     </div>
 
     <!-- Recent Documents List -->
-    <div class="mt-10">
+    <div class="mt-10" x-data="{ showModal: false, selectedDoc: null }">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Audits</h3>
         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
             <table class="min-w-full divide-y divide-gray-300">
@@ -115,6 +115,9 @@
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Reason</th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
+                        <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                            <span class="sr-only">View</span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
@@ -130,14 +133,85 @@
                         </td>
                         <td class="px-3 py-4 text-sm text-gray-500 max-w-xs truncate" title="{{ $doc->audit_reason }}">{{ $doc->audit_reason }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $doc->created_at->diffForHumans() }}</td>
+                        <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                            <button
+                                @click="selectedDoc = {{ $doc->toJson() }}; showModal = true"
+                                class="text-indigo-600 hover:text-indigo-900">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </button>
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">No documents audited yet.</td>
+                        <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">No documents audited yet.</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <!-- Preview Modal -->
+        <div x-show="showModal" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true" style="display: none;">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showModal = false"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-6xl">
+
+                        <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                            <div class="sm:flex sm:items-start h-[80vh]">
+                                <!-- Left: Preview (Iframe/Image) -->
+                                <div class="w-full sm:w-2/3 h-full bg-gray-100 rounded-lg overflow-hidden border">
+                                    <template x-if="selectedDoc">
+                                        <iframe :src="`/documents/${selectedDoc.id}/preview`" class="w-full h-full" frameborder="0"></iframe>
+                                    </template>
+                                </div>
+
+                                <!-- Right: Metadata -->
+                                <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full sm:w-1/3 h-full overflow-y-auto pl-4">
+                                    <h3 class="text-xl font-semibold leading-6 text-gray-900" id="modal-title" x-text="selectedDoc?.original_name"></h3>
+
+                                    <div class="mt-4 space-y-4">
+                                        <div>
+                                            <span class="block text-sm font-medium text-gray-500">Status</span>
+                                            <span
+                                                class="inline-flex rounded-full px-2 text-xs font-semibold leading-5 mt-1"
+                                                :class="{
+                                                    'bg-green-100 text-green-800': selectedDoc?.status === 'approved',
+                                                    'bg-red-100 text-red-800': selectedDoc?.status === 'rejected',
+                                                    'bg-yellow-100 text-yellow-800': selectedDoc?.status !== 'approved' && selectedDoc?.status !== 'rejected'
+                                                }"
+                                                x-text="selectedDoc?.status.charAt(0).toUpperCase() + selectedDoc?.status.slice(1)"></span>
+                                        </div>
+
+                                        <div>
+                                            <span class="block text-sm font-medium text-gray-500">Mime Type</span>
+                                            <p class="text-sm text-gray-900" x-text="selectedDoc?.mime_type"></p>
+                                        </div>
+
+                                        <div>
+                                            <span class="block text-sm font-medium text-gray-500">Uploaded At</span>
+                                            <p class="text-sm text-gray-900" x-text="new Date(selectedDoc?.created_at).toLocaleString()"></p>
+                                        </div>
+
+                                        <div>
+                                            <span class="block text-sm font-medium text-gray-500">AI Analysis Justification</span>
+                                            <div class="mt-1 p-3 bg-gray-50 rounded-md border text-sm text-gray-700 whitespace-pre-wrap" x-text="selectedDoc?.audit_reason || 'No justification provided.'"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                            <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto" @click="showModal = false">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
