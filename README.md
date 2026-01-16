@@ -1,66 +1,84 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SocialToast - Document Audit System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
+SocialToast is a **Document Audit System** built with **Laravel 12** and the **TALL Stack** (Tailwind, Alpine.js, Laravel, Livewire). It features an AI-powered auditing workflow using **Google Gemini** to analyze documents (PDFs and images) and determine their validity based on an adaptable "auditor persona".
 
-## About Laravel
+![Laravel 12](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![Livewire](https://img.shields.io/badge/Livewire-3-4e56a6?style=for-the-badge&logo=livewire&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=google&logoColor=white)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+-   **Authentication & Roles**:
+    -   Secure login via Laravel Breeze.
+    -   Role-based access control (Admin vs. User) using `spatie/laravel-permission`.
+    -   **Admin**: Full access, including Pulse dashboard.
+    -   **User**: Can upload and view their own audits.
+    -   Registration is strictly disabled (invite-only/seeder based).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   **AI Document Auditing**:
+    -   Integration with **Google Gemini API** (using `gemini-flash-latest` model).
+    -   Analysis of invoices, receipts, and identification documents.
+    -   Personas defined in the database (`prompts` table).
 
-## Learning Laravel
+-   **Modern UI/UX**:
+    -   **Drag & Drop Upload**: Smooth file handling using Livewire + Alpine.js.
+    -   **Real-time Feedback**: Progress bars and instant status updates.
+    -   **Responsive Design**: Built `mobile-first` with Tailwind CSS.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+-   **Email Notifications**:
+    -   Automated emails sent via **MailPit** upon audit completion.
+    -   Admins receive alerts for new uploads and audit results.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+-   **Observability**:
+    -   **Laravel Pulse**: Real-time performance and usage monitoring (Admin only).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation & Setup
 
-## Laravel Sponsors
+### Prerequisites
+-   Docker & Docker Compose
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Initial Setup
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/marcellopato/SocialToast.git
+    cd SocialToast
+    ```
 
-### Premium Partners
+2.  **Start the environment (Sail)**:
+    ```bash
+    ./vendor/bin/sail up -d
+    ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+3.  **Install Dependencies**:
+    ```bash
+    ./vendor/bin/sail composer install
+    ./vendor/bin/sail npm install && ./vendor/bin/sail npm run dev
+    ```
 
-## Contributing
+4.  **Environment Configuration**:
+    Copy `.env.example` to `.env` and set your keys:
+    ```ini
+    GEMINI_API_KEY=your_google_gemini_key
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5.  **Database & Seeders**:
+    ```bash
+    ./vendor/bin/sail artisan migrate --seed
+    ```
 
-## Code of Conduct
+## Default Credentials
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Role      | Email                   | Password   |
+| :-------- | :---------------------- | :--------- |
+| **Admin** | `admin@socialtoast.com` | `password` |
+| **User**  | `user@socialtoast.com`  | `password` |
 
-## Security Vulnerabilities
+## Access Points
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Service         | URL                                                        | Info               |
+| :-------------- | :--------------------------------------------------------- | :----------------- |
+| **Application** | [http://localhost:8085](http://localhost:8085)             | Main Dashboard     |
+| **MailPit**     | [http://localhost:8028](http://localhost:8028)             | Email Testing      |
+| **Pulse**       | [http://localhost:8085/pulse](http://localhost:8085/pulse) | Monitoring (Admin) |
