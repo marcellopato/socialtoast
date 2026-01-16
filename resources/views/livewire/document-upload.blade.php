@@ -177,6 +177,11 @@
             </table>
         </div>
 
+        <!-- Pagination -->
+        <div class="mt-4">
+            {{ $recentDocuments->links() }}
+        </div>
+
         <!-- Preview Modal -->
         <div x-show="showModal" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true" style="display: none;">
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showModal = false"></div>
