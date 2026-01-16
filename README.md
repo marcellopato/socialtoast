@@ -68,6 +68,25 @@ SocialToast is a **Document Audit System** built with **Laravel 12** and the **T
     ./vendor/bin/sail artisan migrate --seed
     ```
 
+### Google Drive Setup
+To store documents on Google Drive, you need to configure the credentials in `.env`:
+
+1.  **Create a Project** in [Google Cloud Console](https://console.cloud.google.com/).
+2.  **Enable the Google Drive API**.
+3.  **Create Credentials** (OAuth 2.0 Client ID).
+4.  **Get a Refresh Token**: You can use the [Google Developers OAuth 2.0 Playground](https://developers.google.com/oauthplayground).
+    -   Select "Google Drive API v3" scopes (`https://www.googleapis.com/auth/drive.file`).
+    -   Exchange authorization code for tokens.
+5.  **Get Folder ID**: Open your desired folder in Google Drive and copy the ID from the URL.
+
+Fill in `.env`:
+```ini
+GOOGLE_DRIVE_CLIENT_ID=your_client_id
+GOOGLE_DRIVE_CLIENT_SECRET=your_client_secret
+GOOGLE_DRIVE_REFRESH_TOKEN=your_refresh_token
+GOOGLE_DRIVE_FOLDER_ID=your_folder_id
+```
+
 ## Default Credentials
 
 | Role      | Email                   | Password   |

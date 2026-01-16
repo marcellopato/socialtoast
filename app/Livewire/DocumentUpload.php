@@ -33,14 +33,14 @@ class DocumentUpload extends Component
         $this->isAuditing = true;
 
         try {
-            // Uniquely name the file or use original
+            // Store on Google Drive
             $filename = time() . '_' . $this->file->getClientOriginalName();
-            $path = $this->file->storeAs('documents', $filename, 'public');
+            $path = $this->file->storeAs('documents', $filename, 'google');
 
             // Create Document record
             $document = Document::create([
                 'user_id' => Auth::id(),
-                'path' => $path,
+                'path' => $path, // Path on Google Drive
                 'original_name' => $this->file->getClientOriginalName(),
                 'mime_type' => $this->file->getMimeType(),
                 'status' => 'processing',
@@ -50,10 +50,9 @@ class DocumentUpload extends Component
             $prompt = Prompt::where('key', 'auditor_persona')->first();
             $promptText = $prompt ? $prompt->content : "Please audit this document.";
 
-            // Upload to Gemini
-            // Note: In production, you might want to use the absolute path or read stream
-            $fullPath = storage_path("app/public/{$path}");
-            $fileUri = $geminiService->uploadFile($fullPath, $this->file->getMimeType());
+            // Upload to Gemini using the local temporary file
+            // We use the temp path because the file on Google Drive isn't immediately/easily accessible for file_get_contents without download
+            $fileUri = $geminiService->uploadFile($this->file->getRealPath(), $this->file->getMimeType());
 
             if ($fileUri) {
                 // Audit

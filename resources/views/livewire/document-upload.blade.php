@@ -80,6 +80,30 @@
         @endif
     </div>
 
+    <!-- Google Drive Info -->
+    <div x-data="{ showGuide: false }" class="mt-8 border-t pt-6 mb-8">
+        <button @click="showGuide = !showGuide" type="button" class="flex items-center text-sm text-gray-500 hover:text-gray-700 focus:outline-none">
+            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>How to connect to Google Drive?</span>
+        </button>
+
+        <div x-show="showGuide" class="mt-4 p-4 bg-blue-50 text-sm text-blue-800 rounded-lg" style="display: none;">
+            <p class="font-bold mb-2">Google Drive Integration Setup:</p>
+            <ol class="list-decimal list-inside space-y-1">
+                <li>Create a project in <strong>Google Cloud Console</strong>.</li>
+                <li>Enable the <strong>Google Drive API</strong>.</li>
+                <li>Create <strong>OAuth 2.0 Credentials</strong> (Client ID & Secret).</li>
+                <li>Generate a <strong>Refresh Token</strong> (e.g., via OAuth Playground).</li>
+                <li>Update your <code>.env</code> file with the credentials.</li>
+            </ol>
+            <div class="mt-2 text-xs text-gray-500">
+                See <a href="https://github.com/marcellopato/SocialToast#google-drive-setup" target="_blank" class="underline">README</a> for details.
+            </div>
+        </div>
+    </div>
+
     <!-- Recent Documents List -->
     <div class="mt-10">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Audits</h3>
