@@ -1,0 +1,21 @@
+# Take-Home Case: Design a Document Management System (DMS)
+
+## Problem Overview
+
+You are tasked with designing a cloud-based Document Management System that includes:
+
+1. **Document Storage:** Secure and scalable document storage on the cloud.
+2. **Document Processing:** File transformations like PDF splitting or AI-based OCR based on project-specific rules.
+3. A secure Web UI to manage and upload files (think OneDrive/Google Drive). 
+
+## Aspects to Cover
+
+- **Development Process**: How would you go about developing the application, and how you would leverage AI tools to be faster while keeping code quality.
+- **Choice of Cloud Provider:** Select a cloud provider for the DMS solution.
+- **Compute Platform Choice / Scalability / Performance:** Choose a compute platform and discuss scalability and performance considerations.
+- **CI/CD & Infrastructure as Code (IaC):** Define the CI/CD pipeline and infrastructure management strategy.
+- **Observability & Metrics:** Discuss the monitoring and metrics strategy to track system performance and uptime.
+- **Choice of Stack for Frontend, Backend, and other services:** Select the technology stack for the frontend, backend, and any other service you might want to use, explaining pros and cons of choices.
+- **Architecture for File Processing:** Define the architecture for processing uploaded files.
+- **Authentication Strategy (Web):** Explain the authentication strategy for both the web application and the upload agent.
+- **Choice of Database**: Choose a database solution for storing document information and enabling search functionality.
