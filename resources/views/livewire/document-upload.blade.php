@@ -105,7 +105,7 @@
     </div>
 
     <!-- Recent Documents List -->
-    <div class="mt-10" x-data="{ showModal: false, selectedDoc: null }">
+    <div class="mt-10" x-data="{ showModal: false, selectedDoc: null, iframeLoading: true }">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Audits</h3>
         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
             <table class="min-w-full divide-y divide-gray-300">
@@ -135,7 +135,7 @@
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $doc->created_at->diffForHumans() }}</td>
                         <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                             <button
-                                @click='selectedDoc = @json($doc); showModal = true'
+                                @click='selectedDoc = @json($doc); showModal = true; iframeLoading = true'
                                 class="text-indigo-600 hover:text-indigo-900">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -164,9 +164,21 @@
                         <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                             <div class="sm:flex sm:items-start h-[80vh]">
                                 <!-- Left: Preview (Iframe/Image) -->
-                                <div class="w-full sm:w-2/3 h-full bg-gray-100 rounded-lg overflow-hidden border">
+                                <div class="w-full sm:w-2/3 h-full bg-gray-100 rounded-lg overflow-hidden border relative">
                                     <template x-if="selectedDoc">
-                                        <iframe :src="`/documents/${selectedDoc.id}/preview`" class="w-full h-full" frameborder="0"></iframe>
+                                        <div class="w-full h-full relative">
+                                            <div x-show="iframeLoading" class="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
+                                                <svg class="animate-spin h-10 w-10 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                            </div>
+                                            <iframe
+                                                :src="`/documents/${selectedDoc.id}/preview`"
+                                                class="w-full h-full"
+                                                frameborder="0"
+                                                @load="iframeLoading = false"></iframe>
+                                        </div>
                                     </template>
                                 </div>
 
